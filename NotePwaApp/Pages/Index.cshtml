@@ -1,0 +1,103 @@
+﻿@page
+
+
+<script>
+    //show loading ...
+    
+
+    self.addEventListener('DOMContentLoaded', (event) => {
+        Swal.fire({
+            title: 'Loading',
+            text: 'Please wait ...',
+            timer: 1500,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        //first time check
+        if (getFt() !== "false") {
+            check().then(function (data) {
+                if (data.status == 200) {
+
+                    //make first time false
+                    setFt();
+
+                    //get all notes where isDelete is false from remote
+                    getallisdelfalse().then(function (data) {
+                        data.json().then(function (body) {
+                            body.forEach(function (note) {
+                                db.Create(note);
+                            });
+                        });
+
+                    });
+
+                } else {
+                    alert("Internet connection problem! You must connect at first time...");
+                }
+            });
+        }
+
+        var div2 = document.getElementById("content");
+        check().then(function (data) {
+            if (data.status == 200) {
+
+                //delete all in remote
+                deleteall().then(function () {
+
+                    //send all from local to remote
+                    db.getAll().then(function (data) {
+                        data.forEach(function (note) {
+                            isdeletefalse(note).then(function () {
+
+                                //show
+                                var data = '<div class="col mb-3"><a href="./View" onclick="setId(\'' + note.id + '\')" class="text-decoration-none text-dark"><div class="card"><div class="card-body"><h5 class="card-title">' + note.title + '</h5><p class="card-text">' + note.summary + '</p></div></div></a></div>';
+                                div2.innerHTML += data;
+
+                            });
+                        });
+                    });
+
+                })
+
+            } else {
+                alert("Internet connection problem!");
+
+                //show
+                db.getAll().then(function (data) {
+                    data.forEach(function (note) {
+                        var data = '<div class="col mb-3"><a href="./View" onclick="setId(\'' + note.id + '\')" class="text-decoration-none text-dark"><div class="card"><div class="card-body"><h5 class="card-title">' + note.title + '</h5><p class="card-text">' + note.summary + '</p></div></div></a></div>';
+                        div2.innerHTML += data;
+                    });
+                });
+            }
+        }).catch(function () {
+
+            //show
+            db.getAll().then(function (data) {
+                data.forEach(function (note) {
+                    var data = '<div class="col mb-3"><a href="./View" onclick="setId(\'' + note.id + '\')" class="text-decoration-none text-dark"><div class="card"><div class="card-body"><h5 class="card-title">' + note.title + '</h5><p class="card-text">' + note.summary + '</p></div></div></a></div>';
+                    div2.innerHTML += data;
+                });
+            });
+
+        });
+
+    });
+
+</script>
+
+<div id="content" class="row d-flex">
+
+</div>
+
+<a href="./Insert" class="float bg-primary" style="margin-right:65px">
+    <i class="fa fa-plus my-float" style="color: rgb(255,255,255)"></i>
+</a>
+
+<a href="./Recovery" class="float bg-info">
+    <i class="fa fa-refresh my-float" style="color: rgb(255,255,255)"></i>
+</a>

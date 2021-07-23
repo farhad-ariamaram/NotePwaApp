@@ -1,0 +1,38 @@
+﻿@page
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Note</h5>
+                <button onclick="window.location.href = './Index'" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-danger ml-2 mr-2 text-white" onclick="deleteNote()">Yes</a>
+                <a href="./View" class="btn btn-primary">No</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    self.addEventListener('DOMContentLoaded', (event) => {
+        $(document).ready(function () {
+            $('.modal').modal('show');
+        });
+    });
+
+    function deleteNote() {
+        var idd = getId();
+        db.deleteById(idd)
+            .then(function () {
+                window.location.href = './Index';
+            })
+
+    }
+</script>

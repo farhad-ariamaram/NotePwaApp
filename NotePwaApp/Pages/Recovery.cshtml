@@ -1,0 +1,64 @@
+﻿@page
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Recovery Notes</h5>
+                <button onclick="window.location.href = './Index'" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Recover All Notes From Remote Server?</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-danger ml-2 mr-2 text-white" onclick="recoverall()">Yes</a>
+                <a href="./Index" class="btn btn-primary">No</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    self.addEventListener('DOMContentLoaded', (event) => {
+        $(document).ready(function () {
+            $('.modal').modal('show');
+        });
+    });
+
+    async function recoverall() {
+        check().then(async function (data) {
+
+            if (data.status == 200) {
+                //get all notes from remote
+                await getall().then(async function (data) {
+                     data.json().then(async function (body) {
+                         body.forEach(async (note) => {
+                            await db.Create(note);
+                         });
+                         Swal.fire({
+                             title: 'Recovery start',
+                             text: 'Please wait ...',
+                             timer: 3000,
+                             showConfirmButton: false,
+                             allowOutsideClick: false,
+                             didOpen: () => {
+                                 Swal.showLoading()
+                             }
+                         }).then(function () {
+                             window.location.href = './Index';
+                         });
+                        
+                    });
+                });
+
+            } else {
+                alert("Internet connection problem! You must connect for recovery...");
+                window.location.href = './Index';
+            }
+        });
+
+    }
+</script>

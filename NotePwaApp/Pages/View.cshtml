@@ -1,0 +1,36 @@
+﻿@page
+
+<script>
+    self.addEventListener('load', (event) => {
+        var idd = getId();
+        db.getById(idd)
+            .then(function (data) {
+                document.getElementById("tit").innerHTML = data.title;
+                document.getElementById("bod").innerHTML = data.body;
+            });
+    });
+</script>
+
+<div class="row d-flex">
+    <div class="col mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 id="tit" class="card-title"></h5>
+                <p id="bod" class="card-text"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<a href="./Edit" class="float bg-warning" >
+    <i class="fa fa-edit my-float" style="color: rgb(255,255,255)"></i>
+</a>
+
+<a href="./Delete" class="float bg-danger" style="margin-right:65px">
+    <i class="fa fa-trash my-float" style="color: rgb(255,255,255)"></i>
+</a>
+
+<a href="./Index" class="float bg-info" style="margin-right:130px">
+    <i class="fa fa-arrow-left my-float" style="color: rgb(255,255,255)"></i>
+</a>

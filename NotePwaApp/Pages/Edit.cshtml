@@ -1,0 +1,53 @@
+﻿@page
+
+
+<script>
+    var createdDate;
+    self.addEventListener('load', (event) => {
+        var idd = getId();
+        db.getById(idd)
+            .then(function (data) {
+                createdDate = data.CreatedDate;
+                id.value = data.id;
+                title.value = data.title;
+                body.value = data.body;
+            });
+    });
+</script>
+
+<div class="row">
+    <div class="col-8 offset-2">
+        <input id="id" type="hidden" name="id" />
+        <div class="form-group">
+            <input id="title" class="form-control" type="text" name="title" placeholder="Title ..." />
+        </div>
+        <div class="form-group">
+            <textarea id="body" class="form-control" type="text" name="body" placeholder="Body ..."></textarea>
+        </div>
+        <div class="form-group">
+            <input onclick="edit()" class="btn btn-primary" type="button" name="submit" value="Save" />
+            <a class="btn btn-link" href="./View">Back</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function edit() {
+        var id = document.getElementById("id").value;
+        var title = document.getElementById("title").value;
+        var body = document.getElementById("body").value;
+        var note = {
+            id: id,
+            title: title,
+            body: body,
+            summary: body.substring(0, 50)
+        };
+
+        db.Create(note)
+            .then(function () {
+                window.location.href = './View';
+            });
+
+        
+    }
+</script>
